@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "allowJs": false,
+    "outDir": "dist",
+    "module": "NodeNext",
+    "target": "ES2018",
+    "noImplicitOverride": true,
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
