@@ -28,9 +28,34 @@ export class Controller {
     res.send(product.rows[0]);
   }
 
-  createRemainder = (req, res) => {};
-  increaseRemainder = (req, res) => {};
-  decreaseReaminder = (req, res) => {};
+  createRemainder = async (req, res) => {
+    const { product_id, shop_id, product_quantity } = req.body;
+    const query = 'insert into remainder (product_id, shop_id, product_quantity) values ($1,$2,$3) returning *';
+    const remainder = await db.query(query, [product_id, shop_id, product_quantity]);
+    res.send(remainder.rows[0]);
+  };
+
+  increaseRemainder = async (req, res) => {
+    const id = req.params.id;
+    const incr = req.query.incr;
+    const query =
+      'UPDATE remainder SET product_quantity = product_quantity + $1 WHERE remainder_id = $2 returning product_quantity';
+    const quantity = await db.query(query, [incr, id]);
+    res.send(quantity.rows[0]);
+  };
+
+  decreaseReaminder = async (req, res) => {
+    const id = req.params.id;
+    const decr = req.query.decr;
+    const query = `
+    UPDATE remainder SET product_quantity = (
+      CASE WHEN product_quantity > $1
+      THEN (product_quantity - $1) 
+      ELSE product_quantity END
+    ) WHERE remainder_id = $2 returning product_quantity`;
+    const quantity = await db.query(query, [decr, id]);
+    res.send(quantity.rows[0]);
+  };
 
   async getRemainders(req, res) {
     const { plu, shop_id, order_from, order_to, shelf_from, shelf_to } = req.query;

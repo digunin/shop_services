@@ -5,9 +5,9 @@ const router = Router();
 const controller = new Controller();
 router.get('/products', controller.getProducts);
 router.post('/product', controller.createProduct);
-router.get('/remainders', controller.getRemainders);
-router.post('/remainder', controller.createRemainder);
-router.put('/increase', controller.increaseRemainder);
-router.put('/decrease', controller.decreaseReaminder);
+router.get('/all', controller.getRemainders);
+router.post('/create', controller.createRemainder);
+router.put('/increase/:id', controller.increaseRemainder);
+router.put('/decrease/:id', controller.decreaseReaminder);
 
 export { router };
