@@ -33,7 +33,23 @@ export class Controller {
   decreaseReaminder = (req, res) => {};
 
   async getRemainders(req, res) {
-    const { plu, shop_id, from, to } = req.query;
+    const { plu, shop_id, order_from, order_to, shelf_from, shelf_to } = req.query;
+    const select_part = `
+    select distinct product.product_name, shop.shop_name, remainder.product_quantity
+    from remainder
+    join product on product.product_id = remainder.product_id
+    join shop_order on shop_order.shop_id = remainder.shop_id
+    join shop on shop.shop_id = remainder.shop_id
+    left join order_detail on shop_order.order_id = order_detail.order_id and order_detail.product_id = product.product_id`;
+    let where_part = addCond('product.product_plu', plu, '');
+    where_part = addCond('shop.shop_id', shop_id, where_part);
+    where_part = addCond('order_detail.product_quantity', order_from, where_part, '>=');
+    where_part = addCond('order_detail.product_quantity', order_to, where_part, '<=');
+    where_part = addCond('remainder.product_quantity', shelf_from, where_part, '>=');
+    where_part = addCond('remainder.product_quantity', shelf_to, where_part, '<=');
+    const query = `${select_part}${where_part}`;
+    const shops = await db.query(query);
+    res.send(shops.rows);
   }
 
   async getProducts(req, res) {
@@ -42,7 +58,6 @@ export class Controller {
     let where_part = addCond('product_plu', plu, '');
     where_part = addCond('product_name', name, where_part, 'ilike');
     const query = `${select_part}${where_part}`;
-    console.log(query);
     const shops = await db.query(query);
     res.send(shops.rows);
   }
