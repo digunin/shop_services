@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint",
-    "dev": "tsx watch src/index.ts"
+    "dev_rem": "tsx watch src/remainder-service/index.js",
+    "dev_log": "tsx watch src/log-service/index.ts"
   },
   "keywords": [],
   "author": "",
